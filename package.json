@@ -1,0 +1,16 @@
+{
+  "name": "backnode",
+  "version": "1.0.0",
+  "description": "Clases platzi",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "chat",
+    "telegram",
+    "server"
+  ],
+  "author": "Camilo Andrés Lengua Duque",
+  "license": "MIT"
+}
