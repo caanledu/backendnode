@@ -1,22 +1,38 @@
 const express =  require('express');//Traigo modulo de express tambien se puede con import
 const router = express.Router(); //Definimos el roputer para poder permitir separar cabeceras por metodos por url //Si queremos recibir peticiones get, post, delete, etc
 const response = require('../../network/response');
-
+const controller = require('./controller');
 
 router.get('/',function(req,res){
-    res.header({
-        "custom-header":"personalizado",
-    })
-   response.success(req, res, 'Lista de mensajes');//Se creó una clase que realiza las respuestas de los métodos
+    controller.getMessages()
+        .then((messageList)=>{
+            response.success(req,res,messageList,200);
+        })
+        .catch(e=>{
+            response.error(req, res,'Unexpected Error', 500,e);
+        })
+//     res.header({
+//         "custom-header":"personalizado",
+//     })
+//    response.success(req, res, 'Lista de mensajes');//Se creó una clase que realiza las respuestas de los métodos
 });
 
 router.post('/',function(req,res){
-    console.log(req.body);
-    if(req.query.error=='ok'){//query recibe los parametros por url en la peticion realizada
-        response.error(req, res,'Error inesperado',500,'Es solo una simulacion de los errores');
-    }else{
-        response.success(req, res, 'Creado correctamente',201);//Se creó una clase que realiza las respuestas de los métodos
-    }
+    controller.addMessage(req.body.user,req.body.message)
+    //Esto es utilizado cuando se utilizan promesas
+    .then((fullMessage)=>{//FullMessage lo decuelve el controller en el resolve
+        response.success(req, res,fullMessage,201);
+    })
+    .catch(e=>{
+        response.error(req, res,'Información inválida',400,'Error en el controlador');
+    })
+
+    // //  Asi cuando no se utilizan promesas y se envian datos por la url
+    // if(req.query.error=='ok'){//query recibe los parametros por url en la peticion realizada
+    //     response.error(req, res,'Error inesperado',500,'Es solo una simulacion de los errores');
+    // }else{
+    //     response.success(req, res, 'Creado correctamente',201);//Se creó una clase que realiza las respuestas de los métodos
+    // }
 
 });
 
