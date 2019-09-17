@@ -4,7 +4,8 @@ const response = require('../../network/response');
 const controller = require('./controller');
 
 router.get('/',function(req,res){
-    controller.getMessages()
+    const filterMessage = req.query.user || null;
+    controller.getMessages(filterMessage)
         .then((messageList)=>{
             response.success(req,res,messageList,200);
         })
@@ -35,6 +36,17 @@ router.post('/',function(req,res){
     // }
 
 });
+
+router.patch('/:id', function(req, res){
+    console.log(req.params.id);
+    controller.updateMessage(req.params.id, req.body.message)
+    .then((data)=>{
+        response.success(req,res,data,200);
+    })
+    .catch(e=>{
+        response.error(req,res,'Error interno',500,e);
+    });
+})
 
 
 // // app.use('/',function(req, res){ //Para cualquier ruta o peticion devuelve un hola
