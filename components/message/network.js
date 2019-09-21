@@ -1,10 +1,15 @@
 const express =  require('express');//Traigo modulo de express tambien se puede con import
+const multer = require('multer');//Para cargar archivos
 const router = express.Router(); //Definimos el roputer para poder permitir separar cabeceras por metodos por url //Si queremos recibir peticiones get, post, delete, etc
 const response = require('../../network/response');
 const controller = require('./controller');
 
+const upload = multer({
+    dest:'public/files/'
+});
+
 router.get('/',function(req,res){
-    const filterMessage = req.query.user || null;
+    const filterMessage = req.query.chat || null;
     controller.getMessages(filterMessage)
         .then((messageList)=>{
             response.success(req,res,messageList,200);
@@ -12,14 +17,26 @@ router.get('/',function(req,res){
         .catch(e=>{
             response.error(req, res,'Unexpected Error', 500,e);
         })
-//     res.header({
-//         "custom-header":"personalizado",
-//     })
-//    response.success(req, res, 'Lista de mensajes');//Se creó una clase que realiza las respuestas de los métodos
 });
 
-router.post('/',function(req,res){
-    controller.addMessage(req.body.user,req.body.message)
+// router.get('/',function(req,res){
+//     const filterMessage = req.query.user || null;
+//     controller.getMessages(filterMessage)
+//         .then((messageList)=>{
+//             response.success(req,res,messageList,200);
+//         })
+//         .catch(e=>{
+//             response.error(req, res,'Unexpected Error', 500,e);
+//         })
+// //     res.header({
+// //         "custom-header":"personalizado",
+// //     })
+// //    response.success(req, res, 'Lista de mensajes');//Se creó una clase que realiza las respuestas de los métodos
+// });
+
+router.post('/',upload.single('file'),function(req,res){//UPload para carghar archivps
+    // console.log(req.file)
+    controller.addMessage(req.body.chat,req.body.user,req.body.message,req.file)
     //Esto es utilizado cuando se utilizan promesas
     .then((fullMessage)=>{//FullMessage lo decuelve el controller en el resolve
         response.success(req, res,fullMessage,201);

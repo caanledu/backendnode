@@ -24,13 +24,32 @@ function addMessage(message){
     myMessage.save();
 }
 
+// async function getMessage(filterUser){
+//     let filter = {};
+//     if(filterUser!=null){
+//         filter = {user:filterUser}
+//     }
+//     const messages = await Model.find(filter);
+//     return messages;
+// }
+
+//Esta es la que devuelve el mensaje con el usuario del otro componente
 async function getMessage(filterUser){
-    let filter = {};
-    if(filterUser!=null){
-        filter = {user:filterUser}
-    }
-    const messages = await Model.find(filter);
-    return messages;
+    return new Promise((resolve,reject)=>{
+        let filter = {};
+        if(filterUser!=null){
+            filter = {user:filterUser}
+        }
+        Model.find(filter)
+        .populate('user')//Lo que hace este método es buscar  dentyo de cada elemento y popularlos, toca indicar que campo querems poppular
+        .exec((error,populated)=>{//Ejecuta el populate->Es oblicgación tenerla
+            if(error){
+                reject(error);
+                return false;
+            }
+            resolve(populated);
+        })//No se puede llevar la funcion catch por que el exec ya la lleva
+    })
 }
 
 async function updateText(id, message){

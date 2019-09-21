@@ -1,17 +1,24 @@
 const store = require('./store');
 
-function addMessage(user, message){
+function addMessage(chat,user, message,file){
     //Enviamos los datos en una promesa para decirle al ewtwork que algo ha salidop bien o mal (informacion del usuario)
     return new Promise((resolve, reject)=>{
-        if(!user || !message){
-            console.log('[Message controller] No hay usuario o mensaje');
+        if(!chat || !user || !message){
+            console.log('[Message controller] No hay chat, usuario o mensaje');
             reject('Los datos son incorrectos');
             return false;
         }
+
+        let fileUrl = '';
+        if(file){
+            fileUrl = 'http://localhost:3000/app/files/'+file.filename;
+        }
         const fullMessage={
+            chat:chat,
             user:user,
             message:message,
-            date: new Date()
+            date: new Date(),
+            file:fileUrl
         }
         // console.log(fullMessage);
         store.add(fullMessage);
