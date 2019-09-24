@@ -1,3 +1,10 @@
+// const statusMessage = {
+//     '200':'Done',
+//     '201':'Created',
+//     '400':'Invalid format',
+//     '500':'Internal Error'
+// }
+
 exports.success = function(req, res, message, status){
     res.status(status || 200).send({
         error:'',
