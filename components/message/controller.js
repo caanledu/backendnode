@@ -1,5 +1,5 @@
 const store = require('./store');
-
+const socket = require('../../socket').socket;//Nos traemos el objeto donde se habia guardado nuiestra instancia de socket.io para no traer todo socket;
 function addMessage(chat,user, message,file){
     //Enviamos los datos en una promesa para decirle al ewtwork que algo ha salidop bien o mal (informacion del usuario)
     return new Promise((resolve, reject)=>{
@@ -22,6 +22,9 @@ function addMessage(chat,user, message,file){
         }
         // console.log(fullMessage);
         store.add(fullMessage);
+
+        socket.io.emit('message',fullMessage);
+
         resolve(fullMessage);
     });
     // const fullMessage={
